@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ConnectedBackground from "./ConnectedBackground";
 
+// app/page.tsx
+export const metadata = {
+  title: "Prasad | Software Developer",
+  description: "Welcome to my landing page!",
+};
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
 
