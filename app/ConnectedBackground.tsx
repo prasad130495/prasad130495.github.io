@@ -26,7 +26,7 @@ export default function ConnectedBackground() {
 
     // Create particles
     const particles: { x: number; y: number; vx: number; vy: number }[] = [];
-    const numParticles = 200;
+    const numParticles = Math.floor(Math.max(width, height) / 15);
 
     for (let i = 0; i < numParticles; i++) {
         

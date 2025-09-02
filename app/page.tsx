@@ -55,8 +55,9 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            <h1 className="text-4xl font-bold">Hi! I'm Prasad</h1>
-            <p className="mt-4 text-lg text-gray-300">Software Developer 🚀</p>
+            <h1 className="text-6xl font-bold">Hi! I'm Prasad 👨🏻‍💻 </h1>
+            <p className="mt-10 text-2xl text-gray-300">Software Developer 🚀</p>
+            <p className="mt-4 text-xl text-gray-300">I build things that scale — from silicon chips to web apps. 💻</p>
           </motion.div>
         </>
       )}
