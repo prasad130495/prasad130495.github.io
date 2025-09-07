@@ -1,60 +1,74 @@
-"use client";
+"use client"; // Marks this component as a client-side component (Next.js app directory rule)
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ConnectedBackground from "./ConnectedBackground";
+import { motion, AnimatePresence } from "framer-motion"; // animation library
+import ConnectedBackground from "./ConnectedBackground"; // your custom animated background
 
+// Sections of your landing page (order matters)
 const sections = ["Home", "About", "Projects", "Contact"];
 
 export default function Home() {
+  // State to control splash visibility
   const [showSplash, setShowSplash] = useState(true);
+
+  // Index of currently active section
   const [active, setActive] = useState(0);
+
+  // State to show/hide the right-side navigation bar
   const [showBar, setShowBar] = useState(false);
+
+  // Ref to the scroll container (we’ll attach wheel events here)
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Prevents multiple scrolls firing at once
   const isScrolling = useRef(false);
 
-  // Splash timing
+  // --- Splash timing ---
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 1500);
+    const timer = setTimeout(() => setShowSplash(false), 1500); // hide splash after 1.5s
     return () => clearTimeout(timer);
   }, []);
 
-  // Handle wheel scroll snapping
+  // --- Handle wheel scroll snapping ---
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const onWheel = (e: WheelEvent) => {
-      if (isScrolling.current) return;
+      if (isScrolling.current) return; // ignore if already scrolling
       isScrolling.current = true;
 
       if (e.deltaY > 0 && active < sections.length - 1) {
-        // scroll down
+        // scroll down → move to next section
         setActive((prev) => prev + 1);
       } else if (e.deltaY < 0 && active > 0) {
-        // scroll up
+        // scroll up → move to previous section
         setActive((prev) => prev - 1);
       }
 
+      // Allow another scroll after 800ms
       setTimeout(() => {
         isScrolling.current = false;
-      }, 800); // prevent rapid scrolling
+      }, 800);
     };
 
+    // Attach wheel event listener
     container.addEventListener("wheel", onWheel, { passive: false });
+
+    // Cleanup listener on unmount
     return () => container.removeEventListener("wheel", onWheel);
   }, [active]);
 
-  // Scroll to section when active changes
+  // --- Scroll into view whenever active section changes ---
   useEffect(() => {
     const el = document.getElementById(sections[active].toLowerCase());
-    el?.scrollIntoView({ behavior: "smooth" });
-    setShowBar(true);
+    el?.scrollIntoView({ behavior: "smooth" }); // snap to section smoothly
+    setShowBar(true); // show the side nav bar once user starts interacting
   }, [active]);
 
   return (
     <>
-      {/* Splash stays the same */}
+      {/* Splash Screen (PRASAD text) */}
       <AnimatePresence>
         {showSplash && (
           <motion.div
@@ -67,7 +81,11 @@ export default function Home() {
               className="text-6xl font-bold tracking-widest"
               initial={{ scale: 1, opacity: 1 }}
               animate={{ scale: 1.2, opacity: 1 }}
-              exit={{ opacity: 0, scale: 5, transition: { duration: 1.5, ease: "easeInOut" } }}
+              exit={{
+                opacity: 0,
+                scale: 5, // grows big before fading out
+                transition: { duration: 1.5, ease: "easeInOut" },
+              }}
             >
               PRASAD
             </motion.h1>
@@ -75,14 +93,16 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Landing page */}
+      {/* Landing Page (after splash) */}
       {!showSplash && (
         <div className="fixed inset-0 text-white">
-          {/* Background */}
+          {/* Gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-fuchsia-800" />
+
+          {/* Animated techy lines background */}
           <ConnectedBackground />
 
-          {/* Scroll container */}
+          {/* Scrollable container with sections */}
           <div ref={containerRef} className="relative z-10 h-dvh overflow-hidden">
             {sections.map((s) => (
               <section
@@ -108,17 +128,18 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Right-side bar */}
+          {/* Right-side progress/navigation bar */}
           {showBar && (
             <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
               {sections.map((s, i) => (
                 <motion.button
                   key={s}
                   aria-label={`Go to ${s}`}
-                  onClick={() => setActive(i)}
+                  onClick={() => setActive(i)} // jump to section when clicked
                   className="rounded-full"
                   animate={{
-                    backgroundColor: i === active ? "rgba(146, 34, 238, 1)" : "rgba(255,255,255,0.35)",
+                    backgroundColor:
+                      i === active ? "rgba(146, 34, 238, 1)" : "rgba(255,255,255,0.35)",
                     width: i === active ? 12 : 8,
                     height: i === active ? 60 : 40,
                   }}
